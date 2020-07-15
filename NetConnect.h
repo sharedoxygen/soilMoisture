@@ -9,9 +9,10 @@ char pass[] = SECRET_PASS;
 
 #define WiFiConnectDelay 10000
 
+byte mac[6];
 int status = WL_IDLE_STATUS;
 
-void printMacAddress(byte mac[])
+void displayMacAddress(byte mac[])
 {
   for (int i = 5; i >= 0; i--)
   {
@@ -27,23 +28,27 @@ void printMacAddress(byte mac[])
   }
 }
 
-void printWifiConnectDetails()
+void displayWifiConnectDetails()
 {
-  // print your board's IP address:
+
+// print your board's IP address:
   IPAddress ip = WiFi.localIP();
   Serial.print("IP Address: ");
   Serial.println(ip);
 
-  // print your MAC address:
-  byte mac[6];
+// print your MAC address:
   WiFi.macAddress(mac);
   Serial.print("MAC Address: ");
-  printMacAddress(mac);
+   displayMacAddress(mac);
   Serial.println();
+
 }
 
-extern void wifiConnect()
+extern String wifiConnect()
 {
+
+  char macAddress[18];
+
   // check for the WiFi module:
   if (WiFi.status() == WL_NO_MODULE)
   {
@@ -74,14 +79,14 @@ extern void wifiConnect()
   Serial.print("SSID: ");
   Serial.println(WiFi.SSID());
 
-  printWifiConnectDetails();
+  displayWifiConnectDetails();
   Serial.println();
 
-  // print the MAC address of the router you're attached to:
+  // Network Router MAC address
   byte bssid[6];
   WiFi.BSSID(bssid);
   Serial.print("(BSSID) Router MAC Address: ");
-  printMacAddress(bssid);
+  displayMacAddress(bssid);
   Serial.println();
   // print the received signal strength:
   long rssi = WiFi.RSSI();
@@ -94,4 +99,8 @@ extern void wifiConnect()
   Serial.println(encryption, HEX);
   Serial.println();
 
+  WiFi.macAddress(mac);
+  sprintf(macAddress, "%2X:%2X:%2X:%2X:%2X:%2X", mac[5], mac[4], mac[3], mac[2], mac[1], mac[0]);
+
+  return macAddress; 
 }

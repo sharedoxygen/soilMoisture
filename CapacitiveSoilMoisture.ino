@@ -5,24 +5,29 @@
 #include "APIConnect.h"
 
 // Include Prototypes
-void wifiConnect();
-void postSensorData(char soilMoistureState[], int soilMoistureValue, int soilMoisturePercent);
+String wifiConnect();
+void postSensorData(char sensorLocation[], char soilMoistureState[], int soilMoistureValue, int soilMoisturePercent);
 
-//#define NextReading 2700000  // 45 Minutes
-//#define NextReading 1800000  // 30 Minute
-#define NextReading 60000 // 1 Minutes
+//#define NextReading 259200000  // 3  Days
+//#define NextReading 86400000  // 24 Hours
+#define NextReading  3600000    // 60 Minutes
+//#define NextReading  2700000  // 45 Minutes
+//#define NextReading  1800000  // 30 Minute
+//#define NextReading 60000 // 1 Minutes
 
 // OLED
 
 // Capacivitive Sensor Configuration
 const int SensorPin = A0;
-const int AirValue = 750;
+const int AirValue = 515;
 const int WaterValue = 260;
 
 int intervals = (AirValue - WaterValue) / 3;
 int soilMoistureValue = 0;
 int soilMoisturePercent = 0;
 String soilMoistureState;
+
+String sensorLocation;
 
 // Time
 
@@ -37,7 +42,7 @@ void setup()
   {
     ; // wait for serial port to connect. Needed for native USB port only
   }
-  wifiConnect();
+  sensorLocation = wifiConnect();
 }
 
 //
@@ -82,6 +87,6 @@ void capactiveSensorDataCollection()
   }
 
   //oledDisplay (soilMoistureState);
-  sendSensorData(soilMoistureState, soilMoistureValue, soilMoisturePercent);
+  sendSensorData(sensorLocation, soilMoistureState, soilMoistureValue, soilMoisturePercent);
 
 }

@@ -11,26 +11,40 @@ DynamicJsonDocument dynamicJsonDocument(MESSAGE_SIZE);
 char server[] = "10.0.0.3";
 const int port = 8000;
 
-String sensorData;
-String HTTP;
-
 //char postMessage[100];
-//sprintf(postMessage," POST %s HTTP/1.1", webpage);
+//sprintf(postMessage," POST %s httpPost/1.1", webpage);
 
-void postSensorData()
+void postSensorData(String sensorData)
 {
+    String httpPost;
 
-    HTTP.concat(" POST ");
-    HTTP.concat(SERVICE_URL);
-    HTTP.concat(" HTTP/1.1 ");
+    httpPost.concat(" POST ");
+    httpPost.concat(SERVICE_URL);
+    httpPost.concat(" HTTP/1.1 ");
+
     if (client.connect(server, port))
     {
-        Serial.println("Connected to Server");
-        Serial.println(HTTP);
-        Serial.println();
+        
+        client.println(httpPost);
+        client.print("Content-Type: ");
+        client.println("application/json");
+
+        client.print("Content-Length: ");
+        client.println(sensorData.length());
+
+        client.print("Authorization: ");
+        client.println("Basic ZGV2ZWxvcGVyOnNlY3VyZQ==");
+
+        client.print("Host: ");
+        client.println(server);
+
+        client.println("Connection: close");
+
+        client.println();
+        client.println(sensorData);
 
         client.stop();
-        HTTP="";
+        httpPost = "";
     }
     else
     {
@@ -38,9 +52,11 @@ void postSensorData()
     }
 }
 
-extern void sendSensorData(String soilMoistureState, int soilMoistureValue, int soilMoisturePercent)
+extern void sendSensorData(String sensorLocation, String soilMoistureState, int soilMoistureValue, int soilMoisturePercent)
 {
+    String sensorData;
 
+    dynamicJsonDocument["sensorLocation"] = sensorLocation;
     dynamicJsonDocument["soilState"] = soilMoistureState;
     dynamicJsonDocument["sensorValue"] = soilMoistureValue;
     dynamicJsonDocument["moisturePercent"] = soilMoisturePercent;
@@ -49,10 +65,10 @@ extern void sendSensorData(String soilMoistureState, int soilMoistureValue, int 
     // Serial.println("Dynamic JSON Document");
     // serializeJsonPretty(dynamicJsonDocument, Serial);
     Serial.println();
-    Serial.println("JSON Message for POST");
+    Serial.println("Post Message ");
     serializeJsonPretty(dynamicJsonDocument, sensorData);
     Serial.println(sensorData);
-    sensorData = "";
 
-    postSensorData();
+    postSensorData(sensorData);
+    sensorData = "";
 }
