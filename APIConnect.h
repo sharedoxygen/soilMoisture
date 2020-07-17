@@ -1,4 +1,5 @@
 #include <ArduinoJson.h>
+#include <PubSubClient.h>
 #include <WiFiNINA.h>
 
 #define MESSAGE_SIZE 200
@@ -33,7 +34,7 @@ void postSensorData(String sensorData)
         client.println(sensorData.length());
 
         client.print("Authorization: ");
-        client.println("Basic ZGV2ZWxvcGVyOnNlY3VyZQ==");
+        client.println("Basic aW50ZWdyYXRpb246Y2JyMTAwMHJy");
 
         client.print("Host: ");
         client.println(server);
@@ -52,11 +53,11 @@ void postSensorData(String sensorData)
     }
 }
 
-extern void sendSensorData(String sensorLocation, String soilMoistureState, int soilMoistureValue, int soilMoisturePercent)
+extern void sendSensorData(String sensorDevice, String soilMoistureState, int soilMoistureValue, int soilMoisturePercent)
 {
     String sensorData;
 
-    dynamicJsonDocument["sensorLocation"] = sensorLocation;
+    dynamicJsonDocument["sensorDevice"] = sensorDevice;
     dynamicJsonDocument["soilState"] = soilMoistureState;
     dynamicJsonDocument["sensorValue"] = soilMoistureValue;
     dynamicJsonDocument["moisturePercent"] = soilMoisturePercent;

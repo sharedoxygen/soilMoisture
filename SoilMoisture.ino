@@ -6,7 +6,7 @@
 
 // Include Prototypes
 String wifiConnect();
-void postSensorData(char sensorLocation[], char soilMoistureState[], int soilMoistureValue, int soilMoisturePercent);
+void postSensorData(char sensorDevice[], char soilMoistureState[], int soilMoistureValue, int soilMoisturePercent);
 
 //#define NextReading 259200000  // 3  Days
 //#define NextReading 86400000  // 24 Hours
@@ -27,7 +27,7 @@ int soilMoistureValue = 0;
 int soilMoisturePercent = 0;
 String soilMoistureState;
 
-String sensorLocation;
+String sensorDevice;
 
 // Time
 
@@ -42,7 +42,7 @@ void setup()
   {
     ; // wait for serial port to connect. Needed for native USB port only
   }
-  sensorLocation = wifiConnect();
+  sensorDevice = wifiConnect();
 }
 
 //
@@ -87,6 +87,6 @@ void capactiveSensorDataCollection()
   }
 
   //oledDisplay (soilMoistureState);
-  sendSensorData(sensorLocation, soilMoistureState, soilMoistureValue, soilMoisturePercent);
+  sendSensorData(sensorDevice, soilMoistureState, soilMoistureValue, soilMoisturePercent);
 
 }
