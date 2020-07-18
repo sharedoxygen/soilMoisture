@@ -12,9 +12,6 @@ DynamicJsonDocument dynamicJsonDocument(MESSAGE_SIZE);
 char server[] = "10.0.0.3";
 const int port = 8000;
 
-//char postMessage[100];
-//sprintf(postMessage," POST %s httpPost/1.1", webpage);
-
 void postSensorData(String sensorData)
 {
     String httpPost;
