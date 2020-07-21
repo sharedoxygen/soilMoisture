@@ -1,4 +1,5 @@
 #include <SPI.h>
+#include <Adafruit_GFX.h>
 #include <Adafruit_SSD1306.h>
 
 #include "NetConnect.h"
@@ -10,17 +11,25 @@ void postSensorData(char sensorDevice[], char soilMoistureState[], int soilMoist
 
 //#define NextReading 259200000  // 3  Days
 //#define NextReading 86400000  // 24 Hours
-#define NextReading  3600000    // 60 Minutes
+//#define NextReading  3600000    // 60 Minutes
 //#define NextReading  2700000  // 45 Minutes
 //#define NextReading  1800000  // 30 Minute
-//#define NextReading 60000 // 1 Minutes
+#define NextReading 120000 // 2 Minutes
 
 // OLED
+#define OLED_DISPLAY_DELAY 5000
+#define SCREEN_WIDTH 128 // OLED display width, in pixels
+#define SCREEN_HEIGHT 64 // OLED display height, in pixels
+
+// Declaration for an SSD1306 display connected to I2C (SDA, SCL pins)
+#define OLED_RESET 4 // Reset pin # (or -1 if sharing Arduino reset pin)
+Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
 
 // Capacivitive Sensor Configuration
+#define SENSOR_READ_DELAY 5000
 const int SensorPin = A0;
-const int AirValue = 515;
-const int WaterValue = 260;
+const int AirValue = 1500;
+const int WaterValue = 930;
 
 int intervals = (AirValue - WaterValue) / 3;
 int soilMoistureValue = 0;
@@ -42,6 +51,24 @@ void setup()
   {
     ; // wait for serial port to connect. Needed for native USB port only
   }
+  // OLED
+  // SSD1306_SWITCHCAPVCC = generate display voltage from 3.3V internally
+  if (!display.begin(SSD1306_SWITCHCAPVCC, 0x3C))
+  { // Address 0x3C for 128x32
+    Serial.println(F("SSD1306 allocation failed"));
+    for (;;)
+      ; // Don't proceed, loop forever
+  }
+
+  // Show initial display buffer contents on the screen --
+  // the library initializes this with an Adafruit splash screen.
+  display.display();
+  delay(OLED_DISPLAY_DELAY); // Pause for 2 seconds
+
+  // Clear the buffer
+  display.clearDisplay();
+
+  // Connect to WIFI
   sensorDevice = wifiConnect();
 }
 
@@ -56,8 +83,29 @@ void loop()
 //
 // Display Information on LCD
 //
-void oledDisplay(String status)
-{
+void oledDisplay(String soilMoistureState, int soilMoisturePercent)
+{ 
+    display.clearDisplay();
+
+
+// Soil Moisture Percent   
+    display.clearDisplay();
+    display.setTextSize(2);
+    display.setTextColor(WHITE);
+    display.setCursor(0,0);
+    display.println("Percent ");
+    display.println(soilMoisturePercent);
+    display.display();
+    delay(OLED_DISPLAY_DELAY);
+// Soil Moisture Status
+    display.clearDisplay();
+    display.setTextSize(2);
+    display.setTextColor(WHITE);
+    display.setCursor(0,0);
+    display.println("Status ");
+    display.println(soilMoistureState);
+    display.display();
+    delay(OLED_DISPLAY_DELAY);
 }
 
 //
@@ -71,22 +119,25 @@ void capactiveSensorDataCollection()
 
   if (soilMoistureValue > WaterValue && soilMoistureValue < (WaterValue + intervals))
   {
-    soilMoistureState.concat("Wet");
+    soilMoistureState.concat("Watered");
   }
   else if (soilMoistureValue > (WaterValue + intervals) && soilMoistureValue < (AirValue - intervals))
   {
-    soilMoistureState.concat("Moist");
+    soilMoistureState.concat("I'm Good");
   }
   else if (soilMoistureValue < AirValue && soilMoistureValue > (AirValue - intervals))
   {
-    soilMoistureState.concat("Dry");
+    soilMoistureState.concat("Water Me!");
   }
   else
   {
     soilMoistureState.concat("Out-of-Range");
   }
+  delay(SENSOR_READ_DELAY);
 
-  //oledDisplay (soilMoistureState);
+// Display on OLED 
+  oledDisplay (soilMoistureState, soilMoisturePercent);
+
+// Send to API
   sendSensorData(sensorDevice, soilMoistureState, soilMoistureValue, soilMoisturePercent);
-
 }
