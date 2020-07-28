@@ -1,4 +1,3 @@
-#include <SPI.h>
 #include <Adafruit_GFX.h>
 #include <Adafruit_SSD1306.h>
 
@@ -11,10 +10,10 @@ void postSensorData(char sensorDevice[], char soilMoistureState[], int soilMoist
 
 //#define NextReading 259200000  // 3  Days
 //#define NextReading 86400000  // 24 Hours
-//#define NextReading  3600000    // 60 Minutes
+#define NextReading  14400000    // 4 Hours
 //#define NextReading  2700000  // 45 Minutes
 //#define NextReading  1800000  // 30 Minute
-#define NextReading 120000 // 2 Minutes
+ // #define NextReading 60000 // *
 
 // OLED
 #define OLED_DISPLAY_DELAY 5000
@@ -28,8 +27,8 @@ Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
 // Capacivitive Sensor Configuration
 #define SENSOR_READ_DELAY 5000
 const int SensorPin = A0;
-const int AirValue = 1500;
-const int WaterValue = 930;
+const int AirValue = 720;
+const int WaterValue = 320;
 
 int intervals = (AirValue - WaterValue) / 3;
 int soilMoistureValue = 0;
@@ -119,15 +118,15 @@ void capactiveSensorDataCollection()
 
   if (soilMoistureValue > WaterValue && soilMoistureValue < (WaterValue + intervals))
   {
-    soilMoistureState.concat("Watered");
+    soilMoistureState.concat("Moist Soil");
   }
   else if (soilMoistureValue > (WaterValue + intervals) && soilMoistureValue < (AirValue - intervals))
   {
-    soilMoistureState.concat("I'm Good");
+    soilMoistureState.concat("Drying Soil");
   }
   else if (soilMoistureValue < AirValue && soilMoistureValue > (AirValue - intervals))
   {
-    soilMoistureState.concat("Water Me!");
+    soilMoistureState.concat("Water Now!");
   }
   else
   {

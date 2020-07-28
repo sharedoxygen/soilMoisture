@@ -2,11 +2,11 @@
 #include <PubSubClient.h>
 #include <WiFiNINA.h>
 
-#define MESSAGE_SIZE 200
+#define MESSAGE_SIZE 500
 #define SERVICE_URL "/soilmoisturesensor/"
 
 WiFiClient client;
-DynamicJsonDocument dynamicJsonDocument(MESSAGE_SIZE);
+
 
 // HTTP Connect
 char server[] = "10.0.0.3";
@@ -52,21 +52,24 @@ void postSensorData(String sensorData)
 
 extern void sendSensorData(String sensorDevice, String soilMoistureState, int soilMoistureValue, int soilMoisturePercent)
 {
+
     String sensorData;
+    StaticJsonDocument<MESSAGE_SIZE> jsonDocument;    
 
-    dynamicJsonDocument["sensorDevice"] = sensorDevice;
-    dynamicJsonDocument["soilState"] = soilMoistureState;
-    dynamicJsonDocument["sensorValue"] = soilMoistureValue;
-    dynamicJsonDocument["moisturePercent"] = soilMoisturePercent;
+    jsonDocument["sensorDevice"] = sensorDevice;
+    jsonDocument["soilState"] = soilMoistureState;
+    jsonDocument["sensorValue"] = soilMoistureValue;
+    jsonDocument["moisturePercent"] = soilMoisturePercent;
 
-    // Serial.println();
-    // Serial.println("Dynamic JSON Document");
-    // serializeJsonPretty(dynamicJsonDocument, Serial);
-    Serial.println();
-    Serial.println("Post Message ");
-    serializeJsonPretty(dynamicJsonDocument, sensorData);
+     Serial.println();
+     Serial.println("Deserialized JSON Document");
+     //serializeJsonPretty(jsonDocument, Serial);
+
+    serializeJsonPretty(jsonDocument, sensorData);
     Serial.println(sensorData);
 
     postSensorData(sensorData);
+
     sensorData = "";
+
 }
