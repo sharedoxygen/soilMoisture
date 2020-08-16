@@ -1,16 +1,18 @@
 #include <ArduinoJson.h>
 #include <PubSubClient.h>
 #include <WiFiNINA.h>
+#include "ArduinoPrivate.h"
 
-#define MESSAGE_SIZE 500
+#define MESSAGE_SIZE 512
 #define SERVICE_URL "/soilmoisturesensor/"
 
 WiFiClient client;
 
 
 // HTTP Connect
-char server[] = "10.0.0.3";
-const int port = 8000;
+char basicAuthorization[] = AUTH;
+char server[] = SERVER;
+const int port = PORT;
 
 void postSensorData(String sensorData)
 {
@@ -31,7 +33,7 @@ void postSensorData(String sensorData)
         client.println(sensorData.length());
 
         client.print("Authorization: ");
-        client.println("Basic aW50ZWdyYXRpb246Y2JyMTAwMHJy");
+        client.println(basicAuthorization);
 
         client.print("Host: ");
         client.println(server);
@@ -69,7 +71,5 @@ extern void sendSensorData(String sensorDevice, String soilMoistureState, int so
     Serial.println(sensorData);
 
     postSensorData(sensorData);
-
-    sensorData = "";
 
 }

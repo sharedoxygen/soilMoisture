@@ -10,9 +10,7 @@ void postSensorData(char sensorDevice[], char soilMoistureState[], int soilMoist
 
 //#define NextReading 259200000  // 3  Days
 //#define NextReading 86400000  // 24 Hours
-#define NextReading  14400000    // 4 Hours
-//#define NextReading  2700000  // 45 Minutes
-//#define NextReading  1800000  // 30 Minute
+#define NextReading  7400000    // 2 Hours
  // #define NextReading 60000 // *
 
 // OLED
@@ -27,8 +25,8 @@ Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
 // Capacivitive Sensor Configuration
 #define SENSOR_READ_DELAY 5000
 const int SensorPin = A0;
-const int AirValue = 720;
-const int WaterValue = 320;
+const int AirValue = 725;
+const int WaterValue = 360;
 
 int intervals = (AirValue - WaterValue) / 3;
 int soilMoistureValue = 0;
@@ -36,9 +34,6 @@ int soilMoisturePercent = 0;
 String soilMoistureState;
 
 String sensorDevice;
-
-// Time
-
 //
 // Initial Setup
 //
@@ -46,10 +41,10 @@ void setup()
 {
   //Initialize serial and wait for port to open:
   Serial.begin(9600);
-  while (!Serial)
-  {
-    ; // wait for serial port to connect. Needed for native USB port only
-  }
+//  while (!Serial)
+//   {
+//     ; // wait for serial port for USB connect only
+//   }
   // OLED
   // SSD1306_SWITCHCAPVCC = generate display voltage from 3.3V internally
   if (!display.begin(SSD1306_SWITCHCAPVCC, 0x3C))
@@ -118,11 +113,11 @@ void capactiveSensorDataCollection()
 
   if (soilMoistureValue > WaterValue && soilMoistureValue < (WaterValue + intervals))
   {
-    soilMoistureState.concat("Moist Soil");
+    soilMoistureState.concat("Wet Soil");
   }
   else if (soilMoistureValue > (WaterValue + intervals) && soilMoistureValue < (AirValue - intervals))
   {
-    soilMoistureState.concat("Drying Soil");
+    soilMoistureState.concat("Moist Soil");
   }
   else if (soilMoistureValue < AirValue && soilMoistureValue > (AirValue - intervals))
   {

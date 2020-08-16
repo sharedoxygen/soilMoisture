@@ -1,11 +1,9 @@
 #include <SPI.h>
 #include <WiFiNINA.h>
+#include "ArduinoPrivate.h"
 
-
-#include "ArduinoSecret.h"
-
-char ssid[] = SECRET_SSID; 
-char pass[] = SECRET_PASS; 
+char ssid[] = SSID; 
+char pass[] = PASS; 
 
 #define WiFiConnectDelay 10000
 
