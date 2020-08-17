@@ -1,1 +1,3 @@
 ArduinoSecret.h
+ArduinoPrivate.h
+.gitignore
