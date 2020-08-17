@@ -1,36 +1,50 @@
 #include <ArduinoJson.h>
+#include <PubSubClient.h>
 #include <WiFiNINA.h>
+#include "ArduinoPrivate.h"
 
-#define MESSAGE_SIZE 200
+#define MESSAGE_SIZE 512
 #define SERVICE_URL "/soilmoisturesensor/"
 
 WiFiClient client;
-DynamicJsonDocument dynamicJsonDocument(MESSAGE_SIZE);
+
 
 // HTTP Connect
-char server[] = "10.0.0.3";
-const int port = 8000;
+char basicAuthorization[] = API_AUTH;
+char server[] = SERVER;
+const int port = PORT;
 
-String sensorData;
-String HTTP;
-
-//char postMessage[100];
-//sprintf(postMessage," POST %s HTTP/1.1", webpage);
-
-void postSensorData()
+void postSensorData(String sensorData)
 {
+    String httpPost;
 
-    HTTP.concat(" POST ");
-    HTTP.concat(SERVICE_URL);
-    HTTP.concat(" HTTP/1.1 ");
+    httpPost.concat(" POST ");
+    httpPost.concat(SERVICE_URL);
+    httpPost.concat(" HTTP/1.1 ");
+
     if (client.connect(server, port))
     {
-        Serial.println("Connected to Server");
-        Serial.println(HTTP);
-        Serial.println();
+        
+        client.println(httpPost);
+        client.print("Content-Type: ");
+        client.println("application/json");
+
+        client.print("Content-Length: ");
+        client.println(sensorData.length());
+
+        client.print("Authorization: ");
+        client.println(basicAuthorization);
+
+        client.print("Host: ");
+        client.println(server);
+
+        client.println("Connection: close");
+
+        client.println();
+        client.println(sensorData);
 
         client.stop();
-        HTTP="";
+        httpPost = "";
     }
     else
     {
@@ -38,21 +52,24 @@ void postSensorData()
     }
 }
 
-extern void sendSensorData(String soilMoistureState, int soilMoistureValue, int soilMoisturePercent)
+extern void sendSensorData(String sensorDevice, String soilMoistureState, int soilMoistureValue, int soilMoisturePercent)
 {
 
-    dynamicJsonDocument["soilState"] = soilMoistureState;
-    dynamicJsonDocument["sensorValue"] = soilMoistureValue;
-    dynamicJsonDocument["moisturePercent"] = soilMoisturePercent;
+    String sensorData;
+    StaticJsonDocument<MESSAGE_SIZE> jsonDocument;    
+    
+    jsonDocument["sensorDevice"] = sensorDevice;
+    jsonDocument["soilState"] = soilMoistureState;
+    jsonDocument["sensorValue"] = soilMoistureValue;
+    jsonDocument["moisturePercent"] = soilMoisturePercent;
 
-    // Serial.println();
-    // Serial.println("Dynamic JSON Document");
-    // serializeJsonPretty(dynamicJsonDocument, Serial);
-    Serial.println();
-    Serial.println("JSON Message for POST");
-    serializeJsonPretty(dynamicJsonDocument, sensorData);
+     Serial.println();
+     Serial.println("Deserialized JSON Document");
+     //serializeJsonPretty(jsonDocument, Serial);
+
+    serializeJsonPretty(jsonDocument, sensorData);
     Serial.println(sensorData);
-    sensorData = "";
 
-    postSensorData();
+    postSensorData(sensorData);
+
 }
