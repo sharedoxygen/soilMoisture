@@ -2,8 +2,8 @@
 #include <WiFiNINA.h>
 #include "ArduinoPrivate.h"
 
-char ssid[] = SSID; 
-char pass[] = PASS; 
+char ssid[] = NET_SSID; 
+char pass[] = NET_SSID_PASS; 
 
 #define WiFiConnectDelay 10000
 
@@ -98,7 +98,7 @@ extern String wifiConnect()
   Serial.println();
 
   WiFi.macAddress(mac);
-  sprintf(macAddress, "%2X:%2X:%2X:%2X:%2X:%2X", mac[5], mac[4], mac[3], mac[2], mac[1], mac[0]);
-
+  sprintf(macAddress, "%02X:%02X:%02X:%02X:%02X:%02X", mac[5], mac[4], mac[3], mac[2], mac[1], mac[0]);
+    
   return macAddress; 
 }

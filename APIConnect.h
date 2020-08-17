@@ -10,7 +10,7 @@ WiFiClient client;
 
 
 // HTTP Connect
-char basicAuthorization[] = AUTH;
+char basicAuthorization[] = API_AUTH;
 char server[] = SERVER;
 const int port = PORT;
 
@@ -57,7 +57,7 @@ extern void sendSensorData(String sensorDevice, String soilMoistureState, int so
 
     String sensorData;
     StaticJsonDocument<MESSAGE_SIZE> jsonDocument;    
-
+    
     jsonDocument["sensorDevice"] = sensorDevice;
     jsonDocument["soilState"] = soilMoistureState;
     jsonDocument["sensorValue"] = soilMoistureValue;

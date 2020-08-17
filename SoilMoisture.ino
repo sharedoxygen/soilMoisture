@@ -10,7 +10,7 @@ void postSensorData(char sensorDevice[], char soilMoistureState[], int soilMoist
 
 //#define NextReading 259200000  // 3  Days
 //#define NextReading 86400000  // 24 Hours
-#define NextReading  7400000    // 2 Hours
+#define NextReading  14800000    // 4 Hours
  // #define NextReading 60000 // *
 
 // OLED
@@ -40,11 +40,11 @@ String sensorDevice;
 void setup()
 {
   //Initialize serial and wait for port to open:
-  Serial.begin(9600);
-//  while (!Serial)
-//   {
-//     ; // wait for serial port for USB connect only
-//   }
+  // Serial.begin(9600);
+  // while (!Serial)
+  // {
+  //    ; // wait for serial port for USB connect only
+  // }
   // OLED
   // SSD1306_SWITCHCAPVCC = generate display voltage from 3.3V internally
   if (!display.begin(SSD1306_SWITCHCAPVCC, 0x3C))
