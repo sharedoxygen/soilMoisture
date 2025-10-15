@@ -1,5 +1,4 @@
 # Soil‑Moisture Monitor
---
 
 ## Overview
 The sketch continuously monitors soil moisture, classifies the soil state, and reports the data to a cloud service.  
