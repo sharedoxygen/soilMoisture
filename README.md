@@ -4,20 +4,6 @@ A low‑power Arduino/ESP sketch that reads a capacitive soil‑moisture sensor,
 
 ---
 
-## Table of Contents
-- [Overview](#overview)
-- [Features](#features)
-- [Hardware](#hardware)
-- [Software](#software)
-- [Setup & Installation](#setup--installation)
-- [Usage](#usage)
-- [API Integration](#api-integration)
-- [Troubleshooting](#troubleshooting)
-- [Contributing](#contributing)
-- [License](#license)
-
----
-
 ## Overview
 The sketch continuously monitors soil moisture, classifies the soil state, and reports the data to a cloud service.  
 - **Sensor** – Capacitive soil‑moisture sensor (analog output)  
