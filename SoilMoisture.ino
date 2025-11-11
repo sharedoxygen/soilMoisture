@@ -110,22 +110,19 @@ void capactiveSensorDataCollection()
   soilMoistureState = "";
   soilMoistureValue = analogRead(SensorPin);
   soilMoisturePercent = map(soilMoistureValue, AirValue, WaterValue, 0, 100);
+  soilMoisturePercent = constrain(soilMoisturePercent, 0, 100);
 
-  if (soilMoistureValue > WaterValue && soilMoistureValue < (WaterValue + intervals))
+  if (soilMoistureValue <= (WaterValue + intervals))
   {
     soilMoistureState.concat("Wet Soil");
   }
-  else if (soilMoistureValue > (WaterValue + intervals) && soilMoistureValue < (AirValue - intervals))
+  else if (soilMoistureValue <= (AirValue - intervals))
   {
     soilMoistureState.concat("Moist Soil");
   }
-  else if (soilMoistureValue < AirValue && soilMoistureValue > (AirValue - intervals))
-  {
-    soilMoistureState.concat("Water Now!");
-  }
   else
   {
-    soilMoistureState.concat("Out-of-Range");
+    soilMoistureState.concat("Water Now!");
   }
   delay(SENSOR_READ_DELAY);
 
