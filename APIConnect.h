@@ -16,11 +16,9 @@ const int port = PORT;
 
 void postSensorData(String sensorData)
 {
-    String httpPost;
-
-    httpPost.concat(" POST ");
+    String httpPost = "POST ";
     httpPost.concat(SERVICE_URL);
-    httpPost.concat(" HTTP/1.1 ");
+    httpPost.concat(" HTTP/1.1");
 
     if (client.connect(server, port))
     {
